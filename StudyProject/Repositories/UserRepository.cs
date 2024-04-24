@@ -3,38 +3,72 @@ using StudyProject.Models;
 
 namespace StudyProject.Repositories
 {
+    /// <summary>
+    /// Репозиторий для управления пользователями в базе данных.
+    /// </summary>
     public class UserRepository
     {
         private readonly ProjectManagementContext _context;
-
+        /// <summary>
+        /// Конструктор для UserRepository.
+        /// </summary>
+        /// <param name="context"></param>
         public UserRepository(ProjectManagementContext context)
         {
             _context = context;
         }
-        public async Task<List<User>> GetAllUsersAsync()
+        /// <summary>
+        /// Получить всех пользователей асинхронно.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken)
         {
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> AddUsersAsync(User user)
+        /// <summary>
+        /// Добавить нового пользователя асинхронно.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> AddUsersAsync(User user, CancellationToken cancellationToken)
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return user;
         }
-
-        public async Task<User> GetUsersById(int id)
+        /// <summary>
+        /// Получить пользователя по ID асинхронно.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> GetUsersByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User> UpdateUsers(User updatedUser)
+        /// <summary>
+        /// Обновить существующего пользователя асинхронно.
+        /// </summary>
+        /// <param name="updatedUser"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> UpdateUsersAsync(User updatedUser, CancellationToken cancellationToken)
         {
             _context.Entry(updatedUser).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return updatedUser;
         }
-        public async Task<User> DeleteUsers(int id)
+        /// <summary>
+        /// Удалить пользователя по ID асинхронно.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<User> DeleteUsersAsync(int id, CancellationToken cancellationToken)
         {
             var userToDelete = await _context.Users.FindAsync(id);
             if (userToDelete != null)

@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using StudyProject;
 using StudyProject.Controllers;
 using StudyProject.Models;
 using StudyProject.Repositories;
 using System.Configuration;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +24,6 @@ builder.Services.AddDbContext<ProjectManagementContext>(op =>
 });
 
 builder.Services.AddScoped<ProjectManagementContext>();
-//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CommentRepository, CommentRepository>();
 builder.Services.AddScoped<MemberRepository, MemberRepository>();
 builder.Services.AddScoped<ProjectRepository, ProjectRepository>();
@@ -45,6 +47,9 @@ builder.Services.AddScoped<StudentsController>();
 builder.Services.AddScoped<TaskAssignmentsController>();
 builder.Services.AddScoped<TasksController>();
 builder.Services.AddScoped<UsersController>();
+
+
+
 
 var app = builder.Build();
 

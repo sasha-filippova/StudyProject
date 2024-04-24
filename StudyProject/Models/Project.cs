@@ -1,17 +1,38 @@
 ﻿namespace StudyProject.Models
 {
+    /// <summary>
+    /// Представляет проект.
+    /// </summary>
     public class Project
     {
+        /// <summary>
+        /// Идентификатор проекта.
+        /// </summary>
         public int ProjectId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
-        public int StatusId { get; set; }
 
-        //public Status Status { get; set; }
-        //public Task Task { get; set; }
-        //public Report Report { get; set; }
-        //public Member Member { get; set; }
+        /// <summary>
+        /// Название проекта.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Описание проекта.
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Дата начала проекта.
+        /// </summary>
+        public DateOnly StartDate { get; set; }
+
+        /// <summary>
+        /// Дата окончания проекта.
+        /// </summary>
+        public DateOnly EndDate { get; set; }
+
+        /// <summary>
+        /// Идентификатор статуса проекта.
+        /// </summary>
+        public int StatusId { get; set; }
     }
 }

@@ -11,6 +11,9 @@ using StudyProject.Repositories;
 
 namespace StudyProject.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления комментариями.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
@@ -20,24 +23,32 @@ namespace StudyProject.Controllers
        
         private readonly CommentRepository _commentRepository;
 
-       
+        /// <summary>
+        /// Конструктор для CommentsController.
+        /// </summary>
+        /// <param name="commentRepository">Репозиторий комментариев.</param>
         public CommentsController(CommentRepository commentRepository)
         {
-            //_context = context;
+            
             _commentRepository = commentRepository;
         }
 
-        // GET: api/Categories
+        /// <summary>
+        /// Получить все комментарии.
+        /// </summary>
         [HttpGet]
-        public async Task<List<Comment>> GetAllComment()
+        public async Task<List<Comment>> GetAllComment(CancellationToken cancellationToken)
         {
-            return await _commentRepository.GetAllCommentsAsync();
+            return await _commentRepository.GetAllCommentsAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Получить комментарий по ID.
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Comment>> GetCommentById(int id)
+        public async Task<ActionResult<Comment>> GetCommentById(int id, CancellationToken cancellationToken)
         {
-            var _comment = await _commentRepository.GetCommentsById(id);
+            var _comment = await _commentRepository.GetCommentsByIdAsync(id, cancellationToken);
             if (_comment == null)
             {
                 return NotFound();
@@ -45,31 +56,42 @@ namespace StudyProject.Controllers
             return _comment;
         }
 
+        /// <summary>
+        /// Добавить новый комментарий.
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Comment>> AddCommentAsync(Comment newComment)
+        public async Task<ActionResult<Comment>> AddCommentAsync(Comment newComment, CancellationToken cancellationToken)
         {
-            await _commentRepository.AddCommentsAsync(newComment);
+            await _commentRepository.AddCommentsAsync(newComment, cancellationToken);
             return CreatedAtAction(nameof(GetCommentById), new { id = newComment.CommentId }, newComment);
         }
+
+        /// <summary>
+        /// Обновить существующий комментарий по ID.
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateComment(int id, Comment updatedComment)
+        public async Task<IActionResult> UpdateComment(int id, Comment updatedComment, CancellationToken cancellationToken)
         {
             if (id != updatedComment.CommentId)
             {
                 return BadRequest();
             }
-            await _commentRepository.UpdateComments(updatedComment);
+            await _commentRepository.UpdateCommentsAsync(updatedComment, cancellationToken);
             return NoContent();
         }
+
+        /// <summary>
+        /// Удалить комментарий по ID.
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteComment(int id)
+        public async Task<IActionResult> DeleteComment(int id, CancellationToken cancellationToken)
         {
-            var commentToDelete = await _commentRepository.GetCommentsById(id);
+            var commentToDelete = await _commentRepository.GetCommentsByIdAsync(id, cancellationToken);
             if (commentToDelete == null)
             {
                 return NotFound();
             }
-            await _commentRepository.DeleteComments(id);
+            await _commentRepository.DeleteCommentsAsync(id, cancellationToken);
             return NoContent();
         }
     }

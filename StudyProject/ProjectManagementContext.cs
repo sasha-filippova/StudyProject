@@ -1,11 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyProject.Models;
+using System.Configuration;
 using System.Xml.Linq;
 
 namespace StudyProject
 {
+    // <summary>
+    /// Контекст базы данных для управления сущностями проектного менеджмента.
+    /// </summary>
     public class ProjectManagementContext : DbContext
     {
+        /// <summary>
+        /// Конструктор для ProjectManagementContext.
+        /// </summary>
+        /// <param name="options">Параметры конфигурации контекста.</param>
         public ProjectManagementContext(DbContextOptions<ProjectManagementContext> options) : base(options)
         { }
         public DbSet<Role> Roles { get; set; }
@@ -20,6 +28,10 @@ namespace StudyProject
         public DbSet<Report> Reports { get; set; }
         public DbSet<Status> Statuses { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modelBuilder">Построитель модели, используемый для настройки сущностей и их отношений в базе данных.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TaskAssignment>().HasKey(t => t.AssignmentId);
@@ -87,9 +99,19 @@ namespace StudyProject
 
             
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="optionsBuilder">Построитель опций, используемый для настройки параметров контекста базы данных.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySql("server=localhost;port=3306;database=studyproject;user=root", new MySqlServerVersion(new Version(10, 4, 32)));
+            var builder = WebApplication.CreateBuilder();
+            
+            builder.Services.AddDbContext<ProjectManagementContext>(op =>
+            {
+                op.UseMySql(builder.Configuration.GetConnectionString("MySqlConnection"),
+                new MySqlServerVersion(new Version(10, 4, 32)));
+            });
         }
     }
 }

@@ -11,35 +11,43 @@ using StudyProject.Repositories;
 
 namespace StudyProject.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления статусами.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class StatusController : ControllerBase
     {
         private readonly ProjectManagementContext _context;
 
-        //public StatusController(ProjectManagementContext context)
-        //{
-        //    _context = context;
-        //}
+       
         private readonly StatusRepository _statusRepository;
-
+        /// <summary>
+        /// Конструктор для StatusController.
+        /// </summary>
+        /// <param name="statusRepository">Репозиторий статусов.</param>
         public StatusController(StatusRepository statusRepository)
         {
-            //_context = context;
+
             _statusRepository = statusRepository;
         }
 
-        // GET: api/Categories
+        /// <summary>
+        /// Получить все статусы.
+        /// </summary>
         [HttpGet]
-        public async Task<List<Status>> GetAllStatuses()
+        public async Task<List<Status>> GetAllStatuses(CancellationToken cancellationToken)
         {
-            return await _statusRepository.GetAllStatusesAsync();
+            return await _statusRepository.GetAllStatusesAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Получить статус по ID.
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Status>> GetStatusById(int id)
+        public async Task<ActionResult<Status>> GetStatusById(int id, CancellationToken cancellationToken)
         {
-            var _status = await _statusRepository.GetStatusesById(id);
+            var _status = await _statusRepository.GetStatusesByIdAsync(id, cancellationToken);
             if (_status == null)
             {
                 return NotFound();
@@ -47,31 +55,42 @@ namespace StudyProject.Controllers
             return _status;
         }
 
+        /// <summary>
+        /// Добавить новый статус.
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Status>> AddStatusAsync(Status newStatus)
+        public async Task<ActionResult<Status>> AddStatusAsync(Status newStatus, CancellationToken cancellationToken)
         {
-            await _statusRepository.AddStatusesAsync(newStatus);
+            await _statusRepository.AddStatusesAsync(newStatus, cancellationToken);
             return CreatedAtAction(nameof(GetStatusById), new { id = newStatus.StatusId }, newStatus);
         }
+
+        /// <summary>
+        /// Обновить существующий статус по ID.
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStatus(int id, Status updatedStatus)
+        public async Task<IActionResult> UpdateStatus(int id, Status updatedStatus, CancellationToken cancellationToken)
         {
             if (id != updatedStatus.StatusId)
             {
                 return BadRequest();
             }
-            await _statusRepository.UpdateStatuses(updatedStatus);
+            await _statusRepository.UpdateStatusesAsync(updatedStatus, cancellationToken);
             return NoContent();
         }
+
+        /// <summary>
+        /// Удалить статус по ID.
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteStatus(int id)
+        public async Task<IActionResult> DeleteStatus(int id, CancellationToken cancellationToken)
         {
-            var statusToDelete = await _statusRepository.GetStatusesById(id);
+            var statusToDelete = await _statusRepository.GetStatusesByIdAsync(id, cancellationToken);
             if (statusToDelete == null)
             {
                 return NotFound();
             }
-            await _statusRepository.DeleteStatuses(id);
+            await _statusRepository.DeleteStatusesAsync(id, cancellationToken);
             return NoContent();
         }
     }

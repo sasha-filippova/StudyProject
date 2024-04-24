@@ -11,6 +11,9 @@ using StudyProject.Repositories;
 
 namespace StudyProject.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления участниками проектов.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class MembersController : ControllerBase
@@ -18,27 +21,32 @@ namespace StudyProject.Controllers
         private readonly ProjectManagementContext _context;
         private readonly MemberRepository _memberRepository;
 
-        //public EController(IEventRepository eventRepository)
-        //{
-        //    _eventRepository = eventRepository;
-        //}
+        /// <summary>
+        /// Конструктор для MembersController.
+        /// </summary>
+        /// <param name="memberRepository">Репозиторий участников.</param>
         public MembersController(MemberRepository memberRepository)
         {
-            //_context = context;
+        
             _memberRepository = memberRepository;
         }
 
-        // GET: api/Categories
+        /// <summary>
+        /// Получить всех учатсников.
+        /// </summary>
         [HttpGet]
-        public async Task<List<Member>> GetAllMember()
+        public async Task<List<Member>> GetAllMember(CancellationToken cancellationToken)
         {
-            return await _memberRepository.GetAllMemberssAsync();
+            return await _memberRepository.GetAllMemberssAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Получить участника по ID.
+        /// </summary>
         [HttpGet("{studentId}/{projectId}")]
-        public async Task<ActionResult<Member>> GetMemberByIds(int studentId, int projectId)
+        public async Task<ActionResult<Member>> GetMemberByIds(int studentId, int projectId, CancellationToken cancellationToken)
         {
-            var member = await _memberRepository.GetMembersById(studentId, projectId);
+            var member = await _memberRepository.GetMembersByIdAsync(studentId, projectId, cancellationToken);
             if (member == null)
             {
                 return NotFound();
@@ -46,73 +54,32 @@ namespace StudyProject.Controllers
             return member;
         }
 
+        /// <summary>
+        /// Добавить нового участника.
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Member>> AddMember(Member newMember)
+        public async Task<ActionResult<Member>> AddMember(Member newMember, CancellationToken cancellationToken)
         {
-            await _memberRepository.AddMembersAsync(newMember);
+            await _memberRepository.AddMembersAsync(newMember, cancellationToken);
             return CreatedAtAction(nameof(GetMemberByIds), new { studentId = newMember.StudentId, projectId = newMember.ProjectId }, newMember);
         }
 
-        //[HttpPut("{studentId}/{projectId}")]
-        //public async Task<IActionResult> UpdateMember(int studentId, int projectId, Member updatedMember)
-        //{
-        //    if (studentId != updatedMember.StudentId || projectId != updatedMember.ProjectId)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    await _memberRepository.UpdateMembers(updatedMember);
-        //    return NoContent();
-        //}
 
+        /// <summary>
+        /// Удалить участника по ID.
+        /// </summary>
         [HttpDelete("{studentId}/{projectId}")]
-        public async Task<IActionResult> DeleteMember(int studentId, int projectId)
+        public async Task<IActionResult> DeleteMember(int studentId, int projectId, CancellationToken cancellationToken)
         {
-            var memberToDelete = await _memberRepository.GetMembersById(studentId, projectId);
+            var memberToDelete = await _memberRepository.GetMembersByIdAsync(studentId, projectId, cancellationToken);
             if (memberToDelete == null)
             {
                 return NotFound();
             }
-            await _memberRepository.DeleteMembers(studentId, projectId);
+            await _memberRepository.DeleteMembersAsync(studentId, projectId, cancellationToken);
             return NoContent();
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Member>> GetMembersById(int id)
-        //{
-        //    var _member = await _memberRepository.GetMembersById(id);
-        //    if (_member == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return _member;
-        //}
-
-        //[HttpPost]
-        //public async Task<ActionResult<Member>> AddMembersAsync(Member newMember)
-        //{
-        //    await _memberRepository.AddMembersAsync(newMember);
-        //    return CreatedAtAction(nameof(GetMembersById), new { id = newMember.Id }, newMember);
-        //}
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateMembers(int id, Member updatedComment)
-        //{
-        //    if (id != updatedComment.CommentId)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    await _memberRepository.UpdateComments(updatedComment);
-        //    return NoContent();
-        //}
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteMembers(int id)
-        //{
-        //    var commentToDelete = await _memberRepository.GetMembersById(id);
-        //    if (commentToDelete == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    await _memberRepository.DeleteComments(id);
-        //    return NoContent();
-        //}
+        
     }
 }

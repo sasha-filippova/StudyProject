@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,9 @@ using StudyProject.Repositories;
 
 namespace StudyProject.Controllers
 {
+    /// <summary>
+    /// Контроллер для управления категориями.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -19,27 +23,33 @@ namespace StudyProject.Controllers
         private readonly ProjectManagementContext _context;
         private readonly CategoryRepository _categoryRepository;
 
-        //public EController(IEventRepository eventRepository)
-        //{
-        //    _eventRepository = eventRepository;
-        //}
+        /// <summary>
+        /// Конструктор для CategoriesController.
+        /// </summary>
+        /// <param name="categoryRepository">Репозиторий категорий.</param>
         public CategoriesController(CategoryRepository categoryRepository)
         {
-            //_context = context;
+            
             _categoryRepository = categoryRepository;
         }
 
-        // GET: api/Categories
+        /// <summary>
+        /// Получить все категории.
+        /// </summary>
+        
         [HttpGet]
-        public async Task<List<Category>> GetAllCategory()
+        public async Task<List<Category>> GetAllCategory(CancellationToken cancellationToken = default)
         {
-            return await _categoryRepository.GetAllCategoriesAsync();
+            return await _categoryRepository.GetAllCategoriesAsync(cancellationToken);
         }
 
+        /// <summary>
+        /// Получить категорию по ID.
+        /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategoryById(int id)
+        public async Task<ActionResult<Category>> GetCategoryById(int id, CancellationToken cancellationToken = default)
         {
-            var _category = await _categoryRepository.GetCategoriesById(id);
+            var _category = await _categoryRepository.GetCategoriesByIdAsync(id, cancellationToken);
             if (_category == null)
             {
                 return NotFound();
@@ -47,31 +57,42 @@ namespace StudyProject.Controllers
             return _category;
         }
 
+        /// <summary>
+        /// Добавить новую категорию.
+        /// </summary>
         [HttpPost]
-        public async Task<ActionResult<Category>> AddCategory(Category newCategory)
+        public async Task<ActionResult<Category>> AddCategory(Category newCategory, CancellationToken cancellationToken = default)
         {
-            await _categoryRepository.AddCategoriesAsync(newCategory);
+            await _categoryRepository.AddCategoriesAsync(newCategory, cancellationToken);
             return CreatedAtAction(nameof(GetCategoryById), new { id = newCategory.CategoryId }, newCategory);
         }
+
+        /// <summary>
+        /// Обновить существующую категорию по ID.
+        /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, Category updatedCategory)
+        public async Task<IActionResult> UpdateCategory(int id, Category updatedCategory, CancellationToken cancellationToken)
         {
             if (id != updatedCategory.CategoryId)
             {
                 return BadRequest();
             }
-            await _categoryRepository.UpdateCategories(updatedCategory);
+            await _categoryRepository.UpdateCategoriesAsync(updatedCategory, cancellationToken);
             return NoContent();
         }
+
+        /// <summary>
+        /// Удалить категорию по ID.
+        /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(int id, CancellationToken cancellationToken)
         {
-            var categoryToDelete = await _categoryRepository.GetCategoriesById(id);
+            var categoryToDelete = await _categoryRepository.GetCategoriesByIdAsync(id, cancellationToken);
             if (categoryToDelete == null)
             {
                 return NotFound();
             }
-            await _categoryRepository.DeleteCategories(id);
+            await _categoryRepository.DeleteCategoriesAsync(id, cancellationToken);
             return NoContent();
         }
 

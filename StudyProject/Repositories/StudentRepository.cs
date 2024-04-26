@@ -12,7 +12,7 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Конструктор для StudentRepository.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Контекст базы данных.</param>
         public StudentRepository(ProjectManagementContext context)
         {
             _context = context;
@@ -20,60 +20,60 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить всех студентов асинхронно.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Список студентов</returns>
         public async Task<List<Student>> GetAllStudentsAsync(CancellationToken cancellationToken)
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Students.ToListAsync(cancellationToken);
         }
         /// <summary>
         /// Добавить нового студента асинхронно.
         /// </summary>
-        /// <param name="student"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Student> AddStudentsAsync(Student student, CancellationToken cancellationToken)
+        /// <param name="student">Новый студент</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Добавленный студент</returns>
+        public async Task<Student> AddStudentAsync(Student student, CancellationToken cancellationToken)
         {
             _context.Students.Add(student);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return student;
         }
         /// <summary>
         /// Получить студента по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Student> GetStudentsByIdAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор студента</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Найденный студент</returns>
+        public async Task<Student> GetStudentByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Students.FindAsync(id);
+            return await _context.Students.FindAsync(id, cancellationToken);
         }
 
         /// <summary>
         /// Обновить существующего студента асинхронно.
         /// </summary>
-        /// <param name="updatedStudent"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Student> UpdateStudentsAsync(Student updatedStudent, CancellationToken cancellationToken)
+        /// <param name="updatedStudent">ОБновленный студент</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Обновленный студент</returns>
+        public async Task<Student> UpdateStudentAsync(Student updatedStudent, CancellationToken cancellationToken)
         {
             _context.Entry(updatedStudent).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return updatedStudent;
         }
         /// <summary>
         /// Удалить студента по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Student> DeleteStudentsAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор студента</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Удаленный студент</returns>
+        public async Task<Student> DeleteStudentAsync(int id, CancellationToken cancellationToken)
         {
-            var statusToDelete = await _context.Students.FindAsync(id);
+            var statusToDelete = await _context.Students.FindAsync(id, cancellationToken);
             if (statusToDelete != null)
             {
                 _context.Students.Remove(statusToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             return statusToDelete;
 

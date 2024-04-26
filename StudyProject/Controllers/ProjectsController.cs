@@ -33,8 +33,10 @@ namespace StudyProject.Controllers
         }
 
         /// <summary>
-        /// Получить все проекты.
+        ///  Получить все проекты.
         /// </summary>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список проектов.</returns>
         [HttpGet]
         public async Task<List<Project>> GetAllProject(CancellationToken cancellationToken)
         {
@@ -44,6 +46,9 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить проект по ID.
         /// </summary>
+        /// <param name="id">Идентификатор проекта.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Проект по указанному идентификатору.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Project>> GetProjectsById(int id, CancellationToken cancellationToken)
         {
@@ -58,30 +63,40 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Добавить новый проект.
         /// </summary>
+        /// <param name="newProject">Новый проект.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленный проект</returns>
         [HttpPost]
         public async Task<ActionResult<Project>> AddProjectsAsync(Project newProject, CancellationToken cancellationToken)
         {
             await _projectRepository.AddProjectAsync(newProject, cancellationToken);
-            return CreatedAtAction(nameof(GetProjectsById), new { id = newProject.ProjectId }, newProject);
+            return CreatedAtAction(nameof(GetProjectsById), new { id = newProject.Id }, newProject);
         }
 
         /// <summary>
         /// Обновить существующий проект по ID.
         /// </summary>
+        /// <param name="id">Идентификатор проекта.</param>
+        /// <param name="updatedProject">Обновленный проект.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProject(int id, Project updatedProject, CancellationToken cancellationToken)
         {
-            if (id != updatedProject.ProjectId)
+            if (id != updatedProject.Id)
             {
                 return BadRequest();
             }
-            await _projectRepository.UpdateProjectsAsync(updatedProject, cancellationToken);
+            await _projectRepository.UpdateProjectAsync(updatedProject, cancellationToken);
             return NoContent();
         }
 
         /// <summary>
         /// Удалить проект по ID.
         /// </summary>
+        /// <param name="id">Идентификатор проекта.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id, CancellationToken cancellationToken)
         {
@@ -90,7 +105,7 @@ namespace StudyProject.Controllers
             {
                 return NotFound();
             }
-            await _projectRepository.DeleteProjectsAsync(id, cancellationToken);
+            await _projectRepository.DeleteProjectAsync(id, cancellationToken);
             return NoContent();
         }
     }

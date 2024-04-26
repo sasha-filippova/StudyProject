@@ -22,63 +22,63 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить все категории асинхронно.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список категорий.</returns>
         public async Task<List<Category>> GetAllCategoriesAsync(CancellationToken cancellationToken)
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories.ToListAsync(cancellationToken);
         }
 
         /// <summary>
         /// Добавить новую категорию асинхронно.
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Category> AddCategoriesAsync(Category category, CancellationToken cancellationToken)
+        /// <param name="category">Новая категория для добавления.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленная категория.</returns>
+        public async Task<Category> AddCategoryAsync(Category category, CancellationToken cancellationToken)
         {
             _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return category;
         }
 
         /// <summary>
         /// Получить категорию по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Category> GetCategoriesByIdAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор категории.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Найденная категория.</returns>
+        public async Task<Category> GetCategoryByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Categories.FindAsync(id);
+            return await _context.Categories.FindAsync(id, cancellationToken);
         }
 
         /// <summary>
         /// Обновить существующую категорию асинхронно.
         /// </summary>
-        /// <param name="updatedCategories"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Category> UpdateCategoriesAsync(Category updatedCategories, CancellationToken cancellationToken)
+        /// <param name="updatedCategories">Обновленная информация о категории.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Обновленная категория.</returns>
+        public async Task<Category> UpdateCategoryAsync(Category updatedCategories, CancellationToken cancellationToken)
         {
             _context.Entry(updatedCategories).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return updatedCategories;
         }
 
         /// <summary>
         /// Удалить категорию по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Category> DeleteCategoriesAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор категории для удаления.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Удаленная категория.</returns>
+        public async Task<Category> DeleteCategoryAsync(int id, CancellationToken cancellationToken)
         {
-            var categoryToDelete = await _context.Categories.FindAsync(id);
+            var categoryToDelete = await _context.Categories.FindAsync(id, cancellationToken);
             if (categoryToDelete != null)
             {
                 _context.Categories.Remove(categoryToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             return categoryToDelete;
 

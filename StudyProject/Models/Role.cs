@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор роли.
         /// </summary>
-        public int RoleId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Имя роли.

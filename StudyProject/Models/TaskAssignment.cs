@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор назначения задачи.
         /// </summary>
-        public int AssignmentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Идентификатор задачи.

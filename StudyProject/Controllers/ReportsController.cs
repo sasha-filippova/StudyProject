@@ -35,6 +35,8 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить все отчеты.
         /// </summary>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список отчетов.</returns>
         [HttpGet]
         public async Task<List<Report>> GetAllReport(CancellationToken cancellationToken)
         {
@@ -44,10 +46,13 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить отчет по ID.
         /// </summary>
+        /// <param name="id">Идентификатор отчета.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Отчет по указанному идентификатору.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Report>> GetReportById(int id, CancellationToken cancellationToken)
         {
-            var _report = await _reportRepository.GetReportsByIdAsync(id, cancellationToken);
+            var _report = await _reportRepository.GetReportByIdAsync(id, cancellationToken);
             if (_report == null)
             {
                 return NotFound();
@@ -58,39 +63,49 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Добавить новый отчет.
         /// </summary>
+        /// <param name="newReport">Новый отчет.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленный отчет.</returns>
         [HttpPost]
         public async Task<ActionResult<Report>> AddReportAsync(Report newReport, CancellationToken cancellationToken)
         {
-            await _reportRepository.AddReportsAsync(newReport, cancellationToken);
-            return CreatedAtAction(nameof(GetReportById), new { id = newReport.ReportId }, newReport);
+            await _reportRepository.AddReportAsync(newReport, cancellationToken);
+            return CreatedAtAction(nameof(GetReportById), new { id = newReport.Id }, newReport);
         }
 
         /// <summary>
         /// Обновить существующий отчет по ID.
         /// </summary>
+        /// <param name="id">Идентификатор отчета.</param>
+        /// <param name="updatedReport">Обновленный отчет.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReport(int id, Report updatedReport, CancellationToken cancellationToken)
         {
-            if (id != updatedReport.ReportId)
+            if (id != updatedReport.Id)
             {
                 return BadRequest();
             }
-            await _reportRepository.UpdateReportsAsync(updatedReport, cancellationToken);
+            await _reportRepository.UpdateReportAsync(updatedReport, cancellationToken);
             return NoContent();
         }
 
         /// <summary>
         /// Удалить отчет по ID.
         /// </summary>
+        /// <param name="id">Идентификатор отчета.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполено.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReport(int id, CancellationToken cancellationToken)
         {
-            var reportToDelete = await _reportRepository.GetReportsByIdAsync(id, cancellationToken);
+            var reportToDelete = await _reportRepository.GetReportByIdAsync(id, cancellationToken);
             if (reportToDelete == null)
             {
                 return NotFound();
             }
-            await _reportRepository.DeleteReportsAsync(id, cancellationToken);
+            await _reportRepository.DeleteReportAsync(id, cancellationToken);
             return NoContent();
         }
     }

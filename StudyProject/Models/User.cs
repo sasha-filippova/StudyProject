@@ -10,7 +10,7 @@ namespace StudyProject.Models
         /// <summary>
         /// Идентификатор пользователя.
         /// </summary>
-        public int UserId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Имя пользователя.

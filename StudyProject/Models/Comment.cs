@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор комментария.
         /// </summary>
-        public int CommentId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Идентификатор пользователя, оставившего комментарий.

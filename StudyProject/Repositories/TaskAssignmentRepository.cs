@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyProject.Models;
+using System.Threading;
 
 namespace StudyProject.Repositories
 {
@@ -12,7 +13,7 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Конструктор для TaskAssignmentRepository.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Контекст базы данных.</param>
         public TaskAssignmentRepository(ProjectManagementContext context)
         {
             _context = context;
@@ -20,59 +21,60 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить все назначения задач асинхронно.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Список назначений</returns>
         public async Task<List<TaskAssignment>> GetAllTaskAssignmentsAsync(CancellationToken cancellationToken)
         {
-            return await _context.TaskAssignments.ToListAsync();
+            return await _context.TaskAssignments.ToListAsync(cancellationToken);
         }
 
         /// <summary>
         /// Добавить новое назначение асинхронно.
         /// </summary>
-        /// <param name="student"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<TaskAssignment> AddTaskAssignmentsAsync(TaskAssignment student, CancellationToken cancellationToken)
+        /// <param name="student">Новое назначение студенту</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Добавленное назначение</returns>
+        public async Task<TaskAssignment> AddTaskAssignmentAsync(TaskAssignment student, CancellationToken cancellationToken)
         {
             _context.TaskAssignments.Add(student);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return student;
         }
         /// <summary>
         /// Получить назначение по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<TaskAssignment> GetTaskAssignmentsByIdAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор назначения</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Найденное назначение</returns>
+        public async Task<TaskAssignment> GetTaskAssignmentByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.TaskAssignments.FindAsync(id);
+            return await _context.TaskAssignments.FindAsync(id, cancellationToken);
         }
         /// <summary>
         /// Обновить существующее назначение асинхронно.
         /// </summary>
-        /// <param name="updatedTaskAssignment"></param>
-        /// <returns></returns>
-        public async Task<TaskAssignment> UpdateTaskAssignmentsAsync(TaskAssignment updatedTaskAssignment)
+        /// <param name="updatedTaskAssignment">Обновленное назначение задачи</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Обновленное назначение</returns>
+        public async Task<TaskAssignment> UpdateTaskAssignmentAsync(TaskAssignment updatedTaskAssignment, CancellationToken cancellationToken)
         {
             _context.Entry(updatedTaskAssignment).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return updatedTaskAssignment;
         }
         /// <summary>
         /// Удалить назначение по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<TaskAssignment> DeleteTaskAssignmentsAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор назначения</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Удаленное назначение</returns>
+        public async Task<TaskAssignment> DeleteTaskAssignmentAsync(int id, CancellationToken cancellationToken)
         {
-            var taskAssignmentToDelete = await _context.TaskAssignments.FindAsync(id);
+            var taskAssignmentToDelete = await _context.TaskAssignments.FindAsync(id, cancellationToken);
             if (taskAssignmentToDelete != null)
             {
                 _context.TaskAssignments.Remove(taskAssignmentToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             return taskAssignmentToDelete;
 

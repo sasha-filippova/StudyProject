@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор студента.
         /// </summary>
-        public int StudentId { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// Имя студента.
         /// </summary>

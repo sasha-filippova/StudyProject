@@ -36,6 +36,8 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить все задачи.
         /// </summary>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список задач.</returns>
         [HttpGet]
         public async Task<List<Models.Task>> GetAllTask(CancellationToken cancellationToken)
         {
@@ -45,6 +47,9 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить задачу по ID.
         /// </summary>
+        /// <param name="id">Идентификатор задачи.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Задача по указанному идентификатору.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Task>> GetTasksById(int id, CancellationToken cancellationToken)
         {
@@ -59,20 +64,27 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Добавить новую задачу.
         /// </summary>
+        /// <param name="newTask">Новая задача.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленная задача.</returns>
         [HttpPost]
         public async Task<ActionResult<Models.Task>> AddTasksAsync(Models.Task newTask, CancellationToken cancellationToken)
         {
             await _taskRepository.AddTaskAsync(newTask, cancellationToken);
-            return CreatedAtAction(nameof(GetTasksById), new { id = newTask.TaskId }, newTask);
+            return CreatedAtAction(nameof(GetTasksById), new { id = newTask.Id }, newTask);
         }
 
         /// <summary>
         /// Обновить существующую задачу по ID.
         /// </summary>
+        /// <param name="id">Идентификатор задачи.</param>
+        /// <param name="updatedTask">Обновленная задача.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTasks(int id, Models.Task updatedTask, CancellationToken cancellationToken)
         {
-            if (id != updatedTask.TaskId)
+            if (id != updatedTask.Id)
             {
                 return BadRequest();
             }
@@ -83,6 +95,9 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Удалить задача по ID.
         /// </summary>
+        /// <param name="id">Идентификатор задачи.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTasks(int id, CancellationToken cancellationToken)
         {

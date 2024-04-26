@@ -36,6 +36,8 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить все роли.
         /// </summary>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список ролей.</returns>
         [HttpGet]
         public async Task<List<Role>> GetAllRole(CancellationToken cancellationToken)
         {
@@ -45,10 +47,13 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить роль по ID.
         /// </summary>
+        /// <param name="id">Идентификатор роли.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>> GetRoleById(int id, CancellationToken cancellationToken)
         {
-            var _comment = await _roleRepository.GetRolesByIdAsync(id, cancellationToken);
+            var _comment = await _roleRepository.GetRoleByIdAsync(id, cancellationToken);
             if (_comment == null)
             {
                 return NotFound();
@@ -59,39 +64,49 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Добавить новую роль.
         /// </summary>
+        /// <param name="newRole">Новая роль.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленная роль.</returns>
         [HttpPost]
         public async Task<ActionResult<Role>> AddRoleAsync(Role newRole, CancellationToken cancellationToken)
         {
-            await _roleRepository.AddRolesAsync(newRole, cancellationToken);
-            return CreatedAtAction(nameof(GetRoleById), new { id = newRole.RoleId }, newRole);
+            await _roleRepository.AddRoleAsync(newRole, cancellationToken);
+            return CreatedAtAction(nameof(GetRoleById), new { id = newRole.Id }, newRole);
         }
 
         /// <summary>
         /// Обновить существующую роль по ID.
         /// </summary>
+        /// <param name="id">Идентификатор роли.</param>
+        /// <param name="updatedRole">Обновленная роль.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRole(int id, Role updatedRole, CancellationToken cancellationToken)
         {
-            if (id != updatedRole.RoleId)
+            if (id != updatedRole.Id)
             {
                 return BadRequest();
             }
-            await _roleRepository.UpdateRolesAsync(updatedRole, cancellationToken);
+            await _roleRepository.UpdateRoleAsync(updatedRole, cancellationToken);
             return NoContent();
         }
 
         /// <summary>
         /// Удалить роль по ID.
         /// </summary>
+        /// <param name="id">Идентификатор роли.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(int id, CancellationToken cancellationToken)
         {
-            var roleToDelete = await _roleRepository.GetRolesByIdAsync(id, cancellationToken);
+            var roleToDelete = await _roleRepository.GetRoleByIdAsync(id, cancellationToken);
             if (roleToDelete == null)
             {
                 return NotFound();
             }
-            await _roleRepository.DeleteRolesAsync(id, cancellationToken);
+            await _roleRepository.DeleteRoleAsync(id, cancellationToken);
             return NoContent();
         }
     }

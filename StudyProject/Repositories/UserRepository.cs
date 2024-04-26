@@ -12,7 +12,7 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Конструктор для UserRepository.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Контекст базы данных.</param>
         public UserRepository(ProjectManagementContext context)
         {
             _context = context;
@@ -20,61 +20,61 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить всех пользователей асинхронно.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Список пользователей</returns>
         public async Task<List<User>> GetAllUsersAsync(CancellationToken cancellationToken)
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.ToListAsync(cancellationToken);
         }
 
         /// <summary>
         /// Добавить нового пользователя асинхронно.
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<User> AddUsersAsync(User user, CancellationToken cancellationToken)
+        /// <param name="user">Новый пользователь</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Добавленный пользователь</returns>
+        public async Task<User> AddUserAsync(User user, CancellationToken cancellationToken)
         {
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return user;
         }
         /// <summary>
         /// Получить пользователя по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<User> GetUsersByIdAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Найденный пользователь</returns>
+        public async Task<User> GetUserByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users.FindAsync(id, cancellationToken);
         }
 
         /// <summary>
         /// Обновить существующего пользователя асинхронно.
         /// </summary>
-        /// <param name="updatedUser"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<User> UpdateUsersAsync(User updatedUser, CancellationToken cancellationToken)
+        /// <param name="updatedUser">Обновленный пользователь</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Обновленный пользователь</returns>
+        public async Task<User> UpdateUserAsync(User updatedUser, CancellationToken cancellationToken)
         {
             _context.Entry(updatedUser).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return updatedUser;
         }
         /// <summary>
         /// Удалить пользователя по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<User> DeleteUsersAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор пользователя</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Удаленный пользователь</returns>
+        public async Task<User> DeleteUserAsync(int id, CancellationToken cancellationToken)
         {
-            var userToDelete = await _context.Users.FindAsync(id);
+            var userToDelete = await _context.Users.FindAsync(id, cancellationToken);
             if (userToDelete != null)
             {
                 _context.Users.Remove(userToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             return userToDelete;
 

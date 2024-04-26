@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор задачи.
         /// </summary>
-        public int TaskId { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// Описание задачи.
         /// </summary>

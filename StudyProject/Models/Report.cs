@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор отчета.
         /// </summary>
-        public int ReportId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Идентификатор проекта, к которому относится отчет.

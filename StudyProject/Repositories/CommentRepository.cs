@@ -13,7 +13,7 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Конструктор для CommentRepository.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Контекст базы данных.</param>
         public CommentRepository(ProjectManagementContext context)
         {
             _context = context;
@@ -22,23 +22,23 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить все комментарии асинхронно.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список комментариев.</returns>
         public async Task<List<Comment>> GetAllCommentsAsync(CancellationToken cancellationToken)
         {
-            return await _context.Comments.ToListAsync();
+            return await _context.Comments.ToListAsync(cancellationToken);
         }
 
         /// <summary>
         /// Добавить новый комментарий асинхронно.
         /// </summary>
-        /// <param name="comment"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Comment> AddCommentsAsync(Comment comment, CancellationToken cancellationToken)
+        /// <param name="comment">Новый комментарий.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленный комментарий.</returns>
+        public async Task<Comment> AddCommentAsync(Comment comment, CancellationToken cancellationToken)
         {
             _context.Comments.Add(comment);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return comment;
         }
 
@@ -46,40 +46,40 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить комментарий по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Comment> GetCommentsByIdAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор комментария.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Найденный комментарий.</returns>
+        public async Task<Comment> GetCommentByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Comments.FindAsync(id);
+            return await _context.Comments.FindAsync(id, cancellationToken);
         }
 
         /// <summary>
         /// Обновить существующий комментарий асинхронно.
         /// </summary>
-        /// <param name="updatedComments"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Comment> UpdateCommentsAsync(Comment updatedComments, CancellationToken cancellationToken)
+        /// <param name="updatedComments">Обновленный комментарий.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Обновленный комментарий.</returns>
+        public async Task<Comment> UpdateCommentAsync(Comment updatedComments, CancellationToken cancellationToken)
         {
             _context.Entry(updatedComments).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return updatedComments;
         }
 
         /// <summary>
         /// Удалить комментарий по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Comment> DeleteCommentsAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор комментария.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Удаленный комментарий.</returns>
+        public async Task<Comment> DeleteCommentAsync(int id, CancellationToken cancellationToken)
         {
-            var commentToDelete = await _context.Comments.FindAsync(id);
+            var commentToDelete = await _context.Comments.FindAsync(id, cancellationToken);
             if (commentToDelete != null)
             {
                 _context.Comments.Remove(commentToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             return commentToDelete;
 

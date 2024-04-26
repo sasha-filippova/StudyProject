@@ -33,10 +33,12 @@ namespace StudyProject.Controllers
             _categoryRepository = categoryRepository;
         }
 
+
         /// <summary>
         /// Получить все категории.
         /// </summary>
-        
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список категорий.</returns>
         [HttpGet]
         public async Task<List<Category>> GetAllCategory(CancellationToken cancellationToken = default)
         {
@@ -46,10 +48,13 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить категорию по ID.
         /// </summary>
+        /// <param name="id">Идентификатор категории.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Категория по указанному идентификатору.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategoryById(int id, CancellationToken cancellationToken = default)
         {
-            var _category = await _categoryRepository.GetCategoriesByIdAsync(id, cancellationToken);
+            var _category = await _categoryRepository.GetCategoryByIdAsync(id, cancellationToken);
             if (_category == null)
             {
                 return NotFound();
@@ -60,39 +65,49 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Добавить новую категорию.
         /// </summary>
+        /// <param name="newCategory">Новая категория.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленная категория.</returns>
         [HttpPost]
         public async Task<ActionResult<Category>> AddCategory(Category newCategory, CancellationToken cancellationToken = default)
         {
-            await _categoryRepository.AddCategoriesAsync(newCategory, cancellationToken);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = newCategory.CategoryId }, newCategory);
+            await _categoryRepository.AddCategoryAsync(newCategory, cancellationToken);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = newCategory.Id }, newCategory);
         }
 
         /// <summary>
         /// Обновить существующую категорию по ID.
         /// </summary>
+        /// <param name="id">Идентификатор категории.</param>
+        /// <param name="updatedCategory">Обновленная категория.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, Category updatedCategory, CancellationToken cancellationToken)
         {
-            if (id != updatedCategory.CategoryId)
+            if (id != updatedCategory.Id)
             {
                 return BadRequest();
             }
-            await _categoryRepository.UpdateCategoriesAsync(updatedCategory, cancellationToken);
+            await _categoryRepository.UpdateCategoryAsync(updatedCategory, cancellationToken);
             return NoContent();
         }
 
         /// <summary>
         /// Удалить категорию по ID.
         /// </summary>
+        /// <param name="id">Идентификатор категории.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id, CancellationToken cancellationToken)
         {
-            var categoryToDelete = await _categoryRepository.GetCategoriesByIdAsync(id, cancellationToken);
+            var categoryToDelete = await _categoryRepository.GetCategoryByIdAsync(id, cancellationToken);
             if (categoryToDelete == null)
             {
                 return NotFound();
             }
-            await _categoryRepository.DeleteCategoriesAsync(id, cancellationToken);
+            await _categoryRepository.DeleteCategoryAsync(id, cancellationToken);
             return NoContent();
         }
 

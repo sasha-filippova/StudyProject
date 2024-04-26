@@ -8,7 +8,7 @@
         /// <summary>
         /// Идентификатор проекта.
         /// </summary>
-        public int ProjectId { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Название проекта.

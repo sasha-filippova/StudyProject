@@ -29,12 +29,12 @@ namespace StudyProject
         public DbSet<Status> Statuses { get; set; }
 
         /// <summary>
-        /// 
+        /// Настройка сущностей и их отношений.
         /// </summary>
         /// <param name="modelBuilder">Построитель модели, используемый для настройки сущностей и их отношений в базе данных.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TaskAssignment>().HasKey(t => t.AssignmentId);
+            modelBuilder.Entity<TaskAssignment>().HasKey(t => t.Id);
             modelBuilder.Entity<Member>().HasKey(m => new { m.ProjectId, m.StudentId });
 
             modelBuilder.Entity<User>()
@@ -100,7 +100,7 @@ namespace StudyProject
             
         }
         /// <summary>
-        /// 
+        /// Настройка контекста базы данных для работы с MySQL.
         /// </summary>
         /// <param name="optionsBuilder">Построитель опций, используемый для настройки параметров контекста базы данных.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

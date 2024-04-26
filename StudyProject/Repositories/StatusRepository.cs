@@ -12,7 +12,7 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Конструктор для StatusRepository.
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Контекст базы данных.</param>
         public StatusRepository(ProjectManagementContext context)
         {
             _context = context;
@@ -20,59 +20,59 @@ namespace StudyProject.Repositories
         /// <summary>
         /// Получить все статусы асинхронно.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Список статусов</returns>
         public async Task<List<Status>> GetAllStatusesAsync(CancellationToken cancellationToken)
         {
-            return await _context.Statuses.ToListAsync();
+            return await _context.Statuses.ToListAsync(cancellationToken);
         }
         /// <summary>
         /// Добавить новый статус асинхронно.
         /// </summary>
-        /// <param name="status"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Status> AddStatusesAsync(Status status, CancellationToken cancellationToken)
+        /// <param name="status">Новый статус</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Добавленный статус</returns>
+        public async Task<Status> AddStatusAsync(Status status, CancellationToken cancellationToken)
         {
             _context.Statuses.Add(status);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return status;
         }
         /// <summary>
         /// Получить статус по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Status> GetStatusesByIdAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор статуса</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Найденный статус</returns>
+        public async Task<Status> GetStatusByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Statuses.FindAsync(id);
         }
         /// <summary>
         /// Обновить существующий статус асинхронно.
         /// </summary>
-        /// <param name="updatedStatus"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Status> UpdateStatusesAsync(Status updatedStatus, CancellationToken cancellationToken)
+        /// <param name="updatedStatus">Обновленный статус</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Обновленный статус</returns>
+        public async Task<Status> UpdateStatusAsync(Status updatedStatus, CancellationToken cancellationToken)
         {
             _context.Entry(updatedStatus).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return updatedStatus;
         }
         /// <summary>
         /// Удалить статус по ID асинхронно.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<Status> DeleteStatusesAsync(int id, CancellationToken cancellationToken)
+        /// <param name="id">Идентификатор статуса</param>
+        /// <param name="cancellationToken">Маркер отмены</param>
+        /// <returns>Удаленный статус</returns>
+        public async Task<Status> DeleteStatusAsync(int id, CancellationToken cancellationToken)
         {
-            var statusToDelete = await _context.Statuses.FindAsync(id);
+            var statusToDelete = await _context.Statuses.FindAsync(id, cancellationToken);
             if (statusToDelete != null)
             {
                 _context.Statuses.Remove(statusToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             return statusToDelete;
 

@@ -35,7 +35,8 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить всех студентов.
         /// </summary>
-       
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Список студентов.</returns>
         [HttpGet]
         public async Task<List<Student>> GetAllStudents(CancellationToken cancellationToken)
         {
@@ -45,10 +46,13 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Получить студента по ID.
         /// </summary>
+        /// <param name="id">Идентификатор студента.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Студент по указанному идентификатору.</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudentById(int id, CancellationToken cancellationToken)
         {
-            var _student = await _studentRepository.GetStudentsByIdAsync(id, cancellationToken);
+            var _student = await _studentRepository.GetStudentByIdAsync(id, cancellationToken);
             if (_student == null)
             {
                 return NotFound();
@@ -59,39 +63,49 @@ namespace StudyProject.Controllers
         /// <summary>
         /// Добавить нового студента.
         /// </summary>
+        /// <param name="newStudent">Новый студент.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Добавленный студент.</returns>
         [HttpPost]
         public async Task<ActionResult<Student>> AddStudentAsync(Student newStudent, CancellationToken cancellationToken)
         {
-            await _studentRepository.AddStudentsAsync(newStudent, cancellationToken);
-            return CreatedAtAction(nameof(GetStudentById), new { id = newStudent.StudentId }, newStudent);
+            await _studentRepository.AddStudentAsync(newStudent, cancellationToken);
+            return CreatedAtAction(nameof(GetStudentById), new { id = newStudent.Id }, newStudent);
         }
 
         /// <summary>
-        /// Обновить информацию о существующем студенте по ID.
+        ///  Обновить информацию о существующем студенте по ID.
         /// </summary>
+        /// <param name="id">Идентификатор студента.</param>
+        /// <param name="updatedStudent">Обновленный студент.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStudent(int id, Student updatedStudent, CancellationToken cancellationToken)
         {
-            if (id != updatedStudent.StudentId)
+            if (id != updatedStudent.Id)
             {
                 return BadRequest();
             }
-            await _studentRepository.UpdateStudentsAsync(updatedStudent, cancellationToken);
+            await _studentRepository.UpdateStudentAsync(updatedStudent, cancellationToken);
             return NoContent();
         }
 
         /// <summary>
-        /// Удалить студента по ID.
+        ///  Удалить студента по ID.
         /// </summary>
+        /// <param name="id">Идентификатор студента.</param>
+        /// <param name="cancellationToken">Маркер отмены.</param>
+        /// <returns>Выполнено.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id, CancellationToken cancellationToken)
         {
-            var statusToDelete = await _studentRepository.GetStudentsByIdAsync(id, cancellationToken);
+            var statusToDelete = await _studentRepository.GetStudentByIdAsync(id, cancellationToken);
             if (statusToDelete == null)
             {
                 return NotFound();
             }
-            await _studentRepository.DeleteStudentsAsync(id, cancellationToken);
+            await _studentRepository.DeleteStudentAsync(id, cancellationToken);
             return NoContent();
         }
     }
